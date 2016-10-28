@@ -135,6 +135,7 @@ class ThreadReturns(threading.Thread):
             # assuming v3
             self.result = self._target(*self._args, **self._kwargs)
 
+
 class URLFetch:
 
     def __init__(self, url, method='get', json=False, session=None,
