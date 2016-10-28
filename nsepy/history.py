@@ -9,27 +9,22 @@ from nsepy.urls import *
 import six
 from nsepy.commons import *
 from nsepy.constants import *
-from datetime import date, timedelta
+from datetime import timedelta
 from bs4 import BeautifulSoup
 import pandas as pd
-import six
+# import six
 import inspect
 
 
 dd_mmm_yyyy = StrDate.default_format(format="%d-%b-%Y")
 dd_mm_yyyy = StrDate.default_format(format="%d-%m-%Y")
-EQUITY_SCHEMA = [str, str,
-          dd_mmm_yyyy,
-          float, float, float, float,
-          float, float, float, int, float,
-          int, int, float]
-EQUITY_HEADERS = ["Symbol", "Series", "Date", "Prev Close", 
-          "Open", "High", "Low","Last", "Close", "VWAP",
-          "Volume", "Turnover", "Trades", "Deliverable Volume",
-          "%Deliverble"]
-EQUITY_SCALING = {"Turnover": 100000,
-                  "%Deliverble": 0.01}
-                  
+EQUITY_SCHEMA = [str, str, dd_mmm_yyyy, float, float, float, float, float, float, float, int, float, int, int, float]
+EQUITY_HEADERS = ["Symbol", "Series", "Date", "Prev Close",
+                  "Open", "High", "Low", "Last", "Close", "VWAP",
+                  "Volume", "Turnover", "Trades", "Deliverable Volume",
+                  "%Deliverble"]
+EQUITY_SCALING = {"Turnover": 100000, "%Deliverble": 0.01}
+
 FUTURES_SCHEMA = [str, dd_mmm_yyyy, dd_mmm_yyyy,
                   float, float, float, float,
                   float, float, int, float,
@@ -49,9 +44,8 @@ OPTION_HEADERS = ['Symbol', 'Date', 'Expiry', 'Option Type', 'Strike Price',
                   'Open', 'High', 'Low', 'Close',
                   'Last', 'Settle Price', 'Number of Contracts', 'Turnover',
                   'Premium Turnover', 'Open Interest', 'Change in OI', 'Underlying']
-OPTION_SCALING = {"Turnover": 100000,
-                   "Premium Turnover": 100000}
-                   
+OPTION_SCALING = {"Turnover": 100000, "Premium Turnover": 100000}
+
 
 INDEX_SCHEMA = [dd_mmm_yyyy,
                 float, float, float, float,
@@ -62,12 +56,12 @@ INDEX_HEADERS = ['Date',
 INDEX_SCALING = {'Turnover': 10000000}
 
 VIX_INDEX_SCHEMA = [dd_mmm_yyyy,
-                    float, float, float, float, 
+                    float, float, float, float,
                     float, float, float]
 VIX_INDEX_HEADERS = ['Date',
                      'Open', 'High', 'Low', 'Close',
                      'Previous', 'Change', '%Change']
-VIX_SCALING = {'%Change': 0.01}        
+VIX_SCALING = {'%Change': 0.01}
 
 INDEX_PE_SCHEMA = [dd_mmm_yyyy,
                    float, float, float]
@@ -85,11 +79,13 @@ INDEX_PE_HEADERS = ['Date', 'P/E', 'P/B', 'Div Yield']
     expiry_date = date(yyyy,mm,dd)
 
 """
+
+
 def get_history(symbol, start, end, index=False, futures=False, option_type="",
-                    expiry_date = None, strike_price="", series='EQ'):
+                expiry_date=None, strike_price="", series='EQ'):
     """This is the function to get the historical prices of any security (index,
         stocks, derviatives, VIX) etc.
-        
+
         Args:
             symbol (str): Symbol for stock, index or any security
             start (datetime.date): start date
@@ -100,12 +96,12 @@ def get_history(symbol, start, end, index=False, futures=False, option_type="",
             option_type (str): It takes "CE", "PE", "CA", "PA" for European and American calls and puts
             strike_price (int): Strike price, Compulsory for options
             series (str): Defaults to "EQ", but can be "BE" etc (refer NSE website for details)
-        
+
         Returns:
-            pandas.DataFrame : A pandas dataframe object 
-            
+            pandas.DataFrame : A pandas dataframe object
+
         Raises:
-            ValueError: 
+            ValueError:
                         1. strike_price argument missing or not of type int when options_type is provided
                         2. If there's an Invalid value in option_type, valid values-'CE' or 'PE' or 'CA' or 'CE'
                         3. If both futures='True' and option_type='CE' or 'PE'
@@ -128,12 +124,11 @@ def get_history(symbol, start, end, index=False, futures=False, option_type="",
         t1.join()
         t2.join()
         return pd.concat((t1.result, t2.result))
-        
+
     else:
-        return get_history_quanta(**kwargs) 
-        
-    
-    
+        return get_history_quanta(**kwargs)
+
+
 def get_history_quanta(**kwargs):
     url, params, schema, headers, scaling = validate_params(**kwargs)
     df = url_to_df(url=url,
@@ -142,8 +137,6 @@ def get_history_quanta(**kwargs):
                    headers=headers, scaling=scaling)
     return df
 
-
-    
 
 def url_to_df(url, params, schema, headers, scaling={}):
     resp = url(**params)
@@ -155,29 +148,30 @@ def url_to_df(url, params, schema, headers, scaling={}):
     for key, val in six.iteritems(scaling):
         df[key] = val * df[key]
     return df
-                    
+
+
 def validate_params(symbol, start, end, index=False, futures=False, option_type="",
-                    expiry_date = None, strike_price="", series='EQ'):
-					
+                    expiry_date=None, strike_price="", series='EQ'):
+
     """
-		symbol = "SBIN" (stock name, index name and VIX)
-		start = date(yyyy,mm,dd)
-		end = date(yyyy,mm,dd)
-		index = True, False (True even for VIX)
-		---------------
-		futures = True, False
-		option_type = "CE", "PE", "CA", "PA"
-		strike_price = integer number
-		expiry_date = date(yyyy,mm,dd)
+        symbol = "SBIN" (stock name, index name and VIX)
+        start = date(yyyy,mm,dd)
+        end = date(yyyy,mm,dd)
+        index = True, False (True even for VIX)
+        ---------------
+        futures = True, False
+        option_type = "CE", "PE", "CA", "PA"
+        strike_price = integer number
+        expiry_date = date(yyyy,mm,dd)
     """
 
     params = {}
 
     if start > end:
         raise ValueError('Please check start and end dates')
-    
-    
-    if (futures and not option_type) or (not futures and option_type): #EXOR
+
+    if (futures and not option_type) or (not futures and option_type):
+        # EXOR
         params['symbol'] = symbol
         params['dateRange'] = ''
         params['optionType'] = 'select'
@@ -190,37 +184,42 @@ def validate_params(symbol, start, end, index=False, futures=False, option_type=
             params['expiryDate'] = expiry_date.strftime("%d-%m-%Y")
         except AttributeError as e:
             raise ValueError('Derivative contracts must have expiry_date as datetime.date')
-            
+
         option_type = option_type.upper()
         if option_type in ("CE", "PE", "CA", "PA"):
-            if not isinstance(strike_price,int):
+            if not isinstance(strike_price, int):
                 raise ValueError("strike_price argument missing or not of type int")
-            #option specific
-            if index: params['instrumentType'] = 'OPTIDX'
-            else: params['instrumentType'] = 'OPTSTK'
+            # option specific
+            if index:
+                params['instrumentType'] = 'OPTIDX'
+            else:
+                params['instrumentType'] = 'OPTSTK'
             params['strikePrice'] = strike_price
             params['optionType'] = option_type
             schema = OPTION_SCHEMA
             headers = OPTION_HEADERS
             scaling = OPTION_SCALING
-        elif option_type: 
-            #this means that there's an invalid value in option_type
+        elif option_type:
+            # this means that there's an invalid value in option_type
             raise ValueError("Invalid value in option_type, valid values-'CE' or 'PE' or 'CA' or 'CE'")
         else:
             # its a futures request
             if index:
-                if symbol=='INDIAVIX': params['instrumentType'] = 'FUTIVX'
-                else: params['instrumentType'] = 'FUTIDX'
-            else: params['instrumentType'] = 'FUTSTK'            
+                if symbol == 'INDIAVIX':
+                    params['instrumentType'] = 'FUTIVX'
+                else:
+                    params['instrumentType'] = 'FUTIDX'
+            else:
+                params['instrumentType'] = 'FUTSTK'
             schema = FUTURES_SCHEMA
             headers = FUTURES_HEADERS
             scaling = FUTURES_SCALING
-    elif futures and option_type: 
+    elif futures and option_type:
         raise ValueError("select either futures='True' or option_type='CE' or 'PE' not both")
-    else: # its a normal request
-        
+    else:
+        # its a normal request
         if index:
-            if symbol=='INDIAVIX':
+            if symbol == 'INDIAVIX':
                 params['fromDate'] = start.strftime('%d-%b-%Y')
                 params['toDate'] = end.strftime('%d-%b-%Y')
                 url = index_vix_history_url
@@ -248,9 +247,10 @@ def validate_params(symbol, start, end, index=False, futures=False, option_type=
             schema = EQUITY_SCHEMA
             headers = EQUITY_HEADERS
             scaling = EQUITY_SCALING
-    
+
     return url, params, schema, headers, scaling
-    
+
+
 def get_index_pe_history(symbol, start, end):
     frame = inspect.currentframe()
     args, _, _, kwargs = inspect.getargvalues(frame)
@@ -272,25 +272,26 @@ def get_index_pe_history(symbol, start, end):
     else:
         return get_index_pe_history_quanta(**kwargs)
 
+
 def get_index_pe_history_quanta(symbol, start, end):
     """This function will fetch the P/E, P/B and dividend yield for a given index
-        
+
         Args:
             symbol (str): Symbol for stock, index or any security
             start (datetime.date): start date
             end (datetime.date): end date
-        
+
         Returns:
-            pandas.DataFrame : A pandas dataframe object 
+            pandas.DataFrame : A pandas dataframe object
     """
     if symbol in DERIVATIVE_TO_INDEX:
         index_name = DERIVATIVE_TO_INDEX[symbol]
     else:
         index_name = symbol
-    resp = index_pe_history_url(indexName=index_name, 
+    resp = index_pe_history_url(indexName=index_name,
                                 fromDate=start.strftime('%d-%m-%Y'),
                                 toDate=end.strftime('%d-%m-%Y'))
-    
+
     bs = BeautifulSoup(resp.text, 'html.parser')
     tp = ParseTables(soup=bs,
                      schema=INDEX_PE_SCHEMA,
@@ -298,17 +299,18 @@ def get_index_pe_history_quanta(symbol, start, end):
     df = tp.get_df()
     return df
 
+
 def get_price_list(dt, segment='EQ'):
     MMM = dt.strftime("%b").upper()
     yyyy = dt.strftime("%Y")
-    
+
     """
     1. YYYY
     2. MMM
     3. ddMMMyyyy
     """
-    res = price_list_url(yyyy, MMM, dt.strftime("%d%b%Y").upper() )
-    txt =  unzip_str(res.content)
+    res = price_list_url(yyyy, MMM, dt.strftime("%d%b%Y").upper())
+    txt = unzip_str(res.content)
     fp = six.StringIO(txt)
     df = pd.read_csv(fp)
     del df['Unnamed: 13']
