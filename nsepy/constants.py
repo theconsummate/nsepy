@@ -2,9 +2,9 @@
 """
 Created on Sun Nov 15 23:56:19 2015
 
-@author: jerry
+@author: dhruv
 """
-import six
+# import six
 
 NSE_INDICES = ["NIFTY 50",
                "NIFTY NEXT 50",
@@ -47,15 +47,11 @@ NSE_INDICES = ["NIFTY 50",
                "NIFTY50 VALUE 20",
                "NIFTY GROWSECT 15",
                "NIFTY50 TR 2X LEV",
-               "NIFTY50 TR 1X INV",               
+               "NIFTY50 TR 1X INV"
                ]
 
-DERIVATIVE_TO_INDEX = {"NIFTY": "NIFTY 50",
-               "BANKNIFTY": "NIFTY BANK",
-               "NIFTYINFRA": "NIFTY INFRA",
-               "NIFTYIT": "NIFTY IT",
-               "NIFTYMID50": "NIFTY MIDCAP 50",
-               "NIFTYPSE": "NIFTY PSE"}
+DERIVATIVE_TO_INDEX = {"NIFTY": "NIFTY 50", "BANKNIFTY": "NIFTY BANK", "NIFTYINFRA": "NIFTY INFRA",
+                       "NIFTYIT": "NIFTY IT", "NIFTYMID50": "NIFTY MIDCAP 50", "NIFTYPSE": "NIFTY PSE"}
 
 INDEX_DERIVATIVES = list(DERIVATIVE_TO_INDEX.keys())
 INDEX_DERIVATIVES.append('S&P500')
