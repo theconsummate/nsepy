@@ -53,7 +53,7 @@ equity_history_url = partial(equity_history_url_full,
 2. MMM
 3. ddMMMyyyy
 """
-price_list_url = URLFetchSession(url='http://www.nseindia.com/content/historical/EQUITIES/%s/%s/cm%sbhav.csv.zip')
+price_list_url = URLFetchSession(url='https://www.nseindia.com/content/historical/EQUITIES/%s/%s/cm%sbhav.csv.zip')
 
 """
 1. ddmmyyyy
