@@ -33,6 +33,19 @@ def is_index(index):
 def is_index_derivative(index):
     return index in INDEX_DERIVATIVES
 
+months = ["Unknown",
+    "January",
+    "Febuary",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"]
 
 class StrDate(datetime.date):
     """
@@ -121,7 +134,6 @@ class ThreadReturns(threading.Thread):
         else:
             # assuming v3
             self.result = self._target(*self._args, **self._kwargs)
-
 
 class URLFetch:
 
