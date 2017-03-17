@@ -8,7 +8,7 @@ from nsepy.commons import *
 import ast
 import json
 from bs4 import BeautifulSoup
-from nsepy.liveurls import quote_eq_url, quote_derivative_url, option_chain_url
+from nsepy.liveurls import quote_eq_url, quote_derivative_url, option_chain_url, quote_index_url
 
 
 
@@ -20,8 +20,8 @@ def get_quote(symbol, series='EQ', instrument=None, expiry=None, option_type=Non
     4. type (CE/PE for options, - for futures
     5. strike (strike price upto two decimal places
     """
-    expiry_str = "%02d%s%d"%(expiry.day, months[expiry.month][0:3].upper(), expiry.year)
     if instrument == 'FUTSTK' or instrument == 'FUTIDX':
+        expiry_str = "%02d%s%d"%(expiry.day, months[expiry.month][0:3].upper(), expiry.year)
         res = quote_derivative_url(symbol, instrument, expiry_str, option_type, strike)
     else:
         res = quote_eq_url(symbol, series)
@@ -53,6 +53,19 @@ def get_option_chain(symbol, series='EQ', instrument=None, expiry=None):
                      headers=OPTION_HEADERS, index="Strike Price")
         df = tp.get_df()
         return df.drop(['Chart', 'Chart PE'], axis=1)
+
+
+
+def get_index_quote(symbol):
+    res = quote_index_url()
+    data = json.loads(res.text)['data']
+    if symbol == 'NIFTY':
+        return data[1]
+    elif symbol == 'BANKNIFTY':
+        return data[4]
+    elif symbol == 'INDIAVIX':
+        return data[5]
+
 
 
 # q = get_quote(symbol='NIFTY', instrument='FUTIDX', expiry=datetime.date(2017,02,23))
