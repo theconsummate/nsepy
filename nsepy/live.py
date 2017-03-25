@@ -8,7 +8,7 @@ from nsepy.commons import *
 import ast
 import json
 from bs4 import BeautifulSoup
-from nsepy.liveurls import quote_eq_url, quote_derivative_url, option_chain_url, quote_index_url, option_chain_cds_url
+from nsepy.liveurls import *
 
 
 
@@ -86,6 +86,21 @@ def get_option_chain_cds(expiry):
                  headers=OPTION_HEADERS, index="Strike Price")
     df = tp.get_df()
     return df.drop(['Chart', 'Chart PE'], axis=1)
+
+
+def get_fx_spot_reference_rate(symbol):
+    bs = BeautifulSoup(quote_fx_reference_rate_url().text, 'html.parser')
+    rows = bs.find_all('td')
+    if symbol == 'USDINR':
+        return float(rows[5].get_text().strip())
+    elif symbol == 'GBPINR':
+        return float(rows[7].get_text().strip())
+    elif symbol == 'EURINR':
+        return float(rows[9].get_text().strip())
+    elif symbol == 'JPYINR':
+        return float(rows[11].get_text().strip())
+
+
 
 # q = get_quote(symbol='NIFTY', instrument='FUTIDX', expiry=datetime.date(2017,02,23))
 # q = get_option_chain(symbol='SBIN', instrument='OPTSTK', expiry=datetime.date(2017,02,23))

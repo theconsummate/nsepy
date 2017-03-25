@@ -51,6 +51,11 @@ Get currency option chain
 """
 option_chain_cds_url = URLFetch(url='https://www.nse-india.com/live_market/dynaContent/live_watch/fxTracker/optChainDataByExpDates.jsp?symbol=USDINR&instrument=OPTCUR&expiryDt=%s')
 
+"""
+Get RBI spot reference rates
+"""
+quote_fx_reference_rate_url = URLFetch('https://www.nseindia.com/fxtracker/htms/jp_rbi_rate_home.htm')
+
 
 
 
