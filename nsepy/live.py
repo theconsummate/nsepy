@@ -45,7 +45,7 @@ def get_option_chain(symbol, series='EQ', instrument=None, expiry=None):
                   'Ask Price PE', 'Ask Qty PE', 'Net Chng PE', 'LTP PE', 'IV PE',
                   'Volume PE', 'Chng in OI PE', 'OI PE', 'Chart PE']
     if instrument == 'OPTSTK' or instrument == 'OPTIDX':
-        res = option_chain_url(symbol, instrument, expiry.strftime("%d%b%Y").upper())
+        res = option_chain_url(symbol, instrument, expiry.strftime("%-d%b%Y").upper())
         bs = BeautifulSoup(res.text, 'html.parser')
         tp = ParseTables(soup=bs,
                      schema=OPTION_SCHEMA,
@@ -79,7 +79,7 @@ def get_option_chain_cds(expiry):
                   'Ask Price CE', 'Ask Qty CE', 'Strike Price', 'Bid Qty PE', 'Bid Price PE',
                   'Ask Price PE', 'Ask Qty PE', 'LTP PE', 'IV PE',
                   'Volume PE', 'Chng in OI PE', 'OI PE', 'Chart PE']
-    res = option_chain_cds_url(expiry.strftime("%d%b%Y").upper())
+    res = option_chain_cds_url(expiry.strftime("%-d%b%Y").upper())
     bs = BeautifulSoup(res.text, 'html.parser')
     tp = ParseTables(soup=bs,
                  schema=OPTION_SCHEMA,
