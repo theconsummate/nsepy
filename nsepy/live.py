@@ -24,7 +24,7 @@ def get_quote(symbol, series='EQ', instrument=None, expiry=None, option_type=Non
         expiry_str = expiry.strftime("%d%b%Y").upper()
         res = quote_derivative_url(symbol, instrument, expiry_str, option_type, strike)
     else:
-        res = quote_eq_url(symbol, series)
+        res = quote_eq_url(symbol.replace("&", "%26"), series)
 
     return json.loads(res.text)['data'][0]
 
@@ -45,7 +45,7 @@ def get_option_chain(symbol, series='EQ', instrument=None, expiry=None):
                   'Ask Price PE', 'Ask Qty PE', 'Net Chng PE', 'LTP PE', 'IV PE',
                   'Volume PE', 'Chng in OI PE', 'OI PE', 'Chart PE']
     if instrument == 'OPTSTK' or instrument == 'OPTIDX':
-        res = option_chain_url(symbol, instrument, expiry.strftime("%-d%b%Y").upper())
+        res = option_chain_url(symbol.replace("&", "%26"), instrument, expiry.strftime("%-d%b%Y").upper())
         bs = BeautifulSoup(res.text, 'html.parser')
         tp = ParseTables(soup=bs,
                      schema=OPTION_SCHEMA,
