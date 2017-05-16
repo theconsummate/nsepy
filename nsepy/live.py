@@ -26,7 +26,9 @@ def get_quote(symbol, series='EQ', instrument=None, expiry=None, option_type=Non
     else:
         res = quote_eq_url(symbol.replace("&", "%26"), series)
 
-    return json.loads(res.text)['data'][0]
+    bs = BeautifulSoup(res.text, 'html.parser')
+    return json.loads(bs.find(id='responseDiv').get_text().strip())['data'][0]
+    # return json.loads(res.text)['data'][0]
 
 
 def get_option_chain(symbol, series='EQ', instrument=None, expiry=None):
