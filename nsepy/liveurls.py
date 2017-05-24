@@ -22,7 +22,7 @@ headers = {'Accept' : '*/*',
 1. Stock symbol
 2. Series eg. EQ, N1 ...
 """
-quote_eq_url = URLFetch(url='https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=%s&series=%s', headers=headers)
+quote_eq_url = URLFetch(url='https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=%s', headers=headers)
 
 """
 1. Underlying security (stock symbol or index name)

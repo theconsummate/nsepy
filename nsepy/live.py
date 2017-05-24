@@ -12,7 +12,7 @@ from nsepy.liveurls import *
 
 
 
-def get_quote(symbol, series='EQ', instrument=None, expiry=None, option_type=None, strike=None):
+def get_quote(symbol, instrument=None, expiry=None, option_type=None, strike=None):
     """
     1. Underlying security (stock symbol or index name)
     2. instrument (FUTSTK, OPTSTK, FUTIDX, OPTIDX)
@@ -24,7 +24,7 @@ def get_quote(symbol, series='EQ', instrument=None, expiry=None, option_type=Non
         expiry_str = expiry.strftime("%d%b%Y").upper()
         res = quote_derivative_url(symbol, instrument, expiry_str, option_type, strike)
     else:
-        res = quote_eq_url(symbol.replace("&", "%26"), series)
+        res = quote_eq_url(symbol.replace("&", "%26"))
 
     bs = BeautifulSoup(res.text, 'html.parser')
     return json.loads(bs.find(id='responseDiv').get_text().strip())['data'][0]
