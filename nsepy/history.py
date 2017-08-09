@@ -139,7 +139,11 @@ def get_history_quanta(**kwargs):
 
 
 def url_to_df(url, params, schema, headers, scaling={}):
-    resp = url(**params)
+    if 'series' in params and params['series'] == 'EQ':
+        # seperate tree for equity
+        resp = url(params['symbol'], params['symbolCount'], params['fromDate'], params['toDate'])
+    else:
+        resp = url(**params)
     bs = BeautifulSoup(resp.text, 'html.parser')
     tp = ParseTables(soup=bs,
                      schema=schema,
@@ -238,7 +242,7 @@ def validate_params(symbol, start, end, index=False, futures=False, option_type=
                 headers = INDEX_HEADERS
                 scaling = INDEX_SCALING
         else:
-            params['symbol'] = symbol
+            params['symbol'] = symbol.lower()
             params['series'] = series
             params['symbolCount'] = get_symbol_count(symbol)
             params['fromDate'] = start.strftime('%d-%m-%Y')
