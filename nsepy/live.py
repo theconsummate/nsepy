@@ -8,6 +8,7 @@ from nsepy.commons import *
 import ast
 import json
 from bs4 import BeautifulSoup
+from datetime import date
 from nsepy.liveurls import *
 
 
@@ -23,6 +24,10 @@ def get_quote(symbol, instrument=None, expiry=None, option_type=None, strike=Non
     if instrument == 'FUTSTK' or instrument == 'FUTIDX':
         expiry_str = expiry.strftime("%d%b%Y").upper()
         res = quote_derivative_url(symbol, instrument, expiry_str, option_type, strike)
+    elif instrument == 'FUTCUR':
+        expiry_str = expiry.strftime("%d%b%Y").upper()
+        today_str = date.today().strftime("%d%b%Y").upper()
+        res = quote_fx_url(symbol, expiry_str, symbol, expiry_str, today_str)
     else:
         res = quote_eq_url(symbol.replace("&", "%26"))
 

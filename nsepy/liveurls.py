@@ -24,6 +24,8 @@ headers = {'Accept' : '*/*',
 """
 quote_eq_url = URLFetch(url='https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=%s', headers=headers)
 
+quote_fx_url = URLFetch('https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteCID.jsp?underlying=%s&instrument=FUTCUR&expiry=%s&key=FUTCUR%s%s--%s', headers=headers)
+
 """
 1. Underlying security (stock symbol or index name)
 2. instrument (FUTSTK, OPTSTK, FUTIDX, OPTIDX)
