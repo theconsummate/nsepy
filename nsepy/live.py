@@ -73,7 +73,7 @@ def get_index_quote(symbol):
         return data[5]
 
 
-def get_option_chain_cds(expiry):
+def get_option_chain_cds(symbol, expiry):
     """
     1. expiry (ddMMMyyyy)
     """
@@ -86,7 +86,7 @@ def get_option_chain_cds(expiry):
                   'Ask Price CE', 'Ask Qty CE', 'Strike Price', 'Bid Qty PE', 'Bid Price PE',
                   'Ask Price PE', 'Ask Qty PE', 'LTP PE', 'IV PE',
                   'Volume PE', 'Chng in OI PE', 'OI PE', 'Chart PE']
-    res = option_chain_cds_url(expiry.strftime("%-d%b%Y").upper())
+    res = option_chain_cds_url(symbol, expiry.strftime("%-d%b%Y").upper())
     bs = BeautifulSoup(res.text, 'html.parser')
     tp = ParseTables(soup=bs,
                  schema=OPTION_SCHEMA,

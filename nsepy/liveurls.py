@@ -50,7 +50,7 @@ quote_index_url = URLFetch(url='https://www.nse-india.com/homepage/Indices1.json
 """
 Get currency option chain
 """
-option_chain_cds_url = URLFetch(url='https://www.nse-india.com/live_market/dynaContent/live_watch/fxTracker/optChainDataByExpDates.jsp?symbol=USDINR&instrument=OPTCUR&expiryDt=%s')
+option_chain_cds_url = URLFetch(url='https://www.nse-india.com/live_market/dynaContent/live_watch/fxTracker/optChainDataByExpDates.jsp?symbol=%s&instrument=OPTCUR&expiryDt=%s')
 
 """
 Get RBI spot reference rates
